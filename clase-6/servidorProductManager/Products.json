@@ -1,0 +1,38 @@
+[
+	{
+		"title": "iPhone",
+		"description": "iPhone 15 Pro Max (512 GB) - Plata",
+		"price": 2000000,
+		"thumbnail": "img.com/iphone-15-pro-max",
+		"code": 604,
+		"stock": 4,
+		"id": 1
+	},
+	{
+		"title": "iPad",
+		"description": "iPad 9na Generacion (256 GB) - Plata",
+		"price": 500000,
+		"thumbnail": "img.com/ipad-9na-generacion",
+		"code": 138,
+		"stock": 15,
+		"id": 2
+	},
+	{
+		"title": "iWatch",
+		"description": "iWatch Se 2da Generacion - Midnight",
+		"price": 240000,
+		"thumbnail": "img.com/iwatch-2da-generacion",
+		"code": 631,
+		"stock": 6,
+		"id": 3
+	},
+	{
+		"title": "iMac",
+		"description": "iMac 24 M1 (256 GB) - Blue",
+		"price": 1400000,
+		"thumbnail": "img.com/imac-24-m1",
+		"code": 805,
+		"stock": 2,
+		"id": 4
+	}
+]
