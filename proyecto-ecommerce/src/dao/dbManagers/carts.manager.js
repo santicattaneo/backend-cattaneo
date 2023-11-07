@@ -6,16 +6,16 @@ export default class Carts {
     };
 
     get = async () => {
-        const carts = await cartsModel.find();
-        return carts.map((cart) => cart.toObject());
+        const result = await cartsModel.find().lean();
+        return result;
     };
 
     getById = async (cid) => {
-        const cartById = await cartsModel.find({ _id: cid });
-        return cartById
+        const result = await cartsModel.find({ _id: cid });
+        return result
     };
 
-    add = async (body) => {
+    post = async (body) => {
         const result = await cartsModel.create(body);
         return result;
     };
@@ -35,12 +35,12 @@ export default class Carts {
         return result;
     };
 
-    put = async (cid, body) => {
+    update = async (cid, body) => {
         const result = await cartsModel.updateOne({ _id: cid }, body);
         return result;
     };
 
-    putProduct = async (cid, pid, quantity) => {
+    updateProduct = async (cid, pid, quantity) => {
         const result = await cartsModel.updateOne({ _id: cid, 'proucts.product_id': pid }, { $set: { 'products.$.quantity': quantity }}, { new: true });
         return result;
     };
