@@ -1,16 +1,15 @@
 <h1>Products</h1>
 {{#each products}}
-    <ul>
-        <li><h2>{{this.title}}</h2></li>
-        <li><p>{{this.description}}</p></li>
-        <li><p><b>{{this.category}}</b></p></li>
-        <li><h3>{{this.price}}</h3></li>
-        <li><p>{{this.stock}}</p></li>
-    </ul>
+    <h2>{{this.title}}</h2>
+    <p>{{this.description}}</p>
+    <p><b>{{this.category}}</b></p>
+    <h3>{{this.price}}</h3>
+    <p>{{this.stock}}</p>
+    <hr/>
 {{/each}}
 {{#if hasPrevPage}}
-    <a href="/students?page{{prevPage}}"><button>Anterior</button></a>
+    <a href="/products-view?page={{prevPage}}"><button>Anterior</button></a>
 {{/if}}
 {{#if hasNextPage}}
-    <a href="/students?page{{nextPage}}"><button>Siguiente</button></a>
+    <a href="/products-view?page={{nextPage}}"><button>Siguiente</button></a>
 {{/if}}

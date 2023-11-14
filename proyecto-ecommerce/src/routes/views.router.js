@@ -8,28 +8,61 @@ const router = Router();
 const cartsManager = new Carts();
 const productsManager = new Products();
 
-router.get('/products-view', async (req, res) => {
+//midlewares
+const publicAccess = (req, res, next) => {
+    if(req.session?.user) return res.redirect('/');
+    next();
+};
+const privateAccess = (req, res, next) => {
+    if(!req.session?.user) return res.redirect('/login');
+    next();
+}
+//
+
+router.get('/register', publicAccess, (req, res) => {
+    res.render('register');
+});
+
+router.get('/login', publicAccess, (req, res) => {
+    res.render('login');
+});
+
+router.get('/', privateAccess, (req, res) => {
+    res.render('profile', {
+        user: req.session.user
+    });
+});
+
+router.get('/products-view', privateAccess, async (req, res) => {
     try {
         const { page = 1, limit = 5, sort, query } = req.query;
-        const { docs, hasPrevPage, hasNextPage, nextPage, prevPage } = await productsModel.paginate({}, { limit: limit, page: page, sort: sort, query: query });
-        res.render('products', {
-            students: docs,
-            hasPrevPage,
-            hasNextPage,
-            nextPage,
-            prevPage
-        });
+        const { docs, hasPrevPage, hasNextPage, nextPage, prevPage } = await productsModel.paginate({}, { limit, page, sort, query });
+    const plainObjects = docs.map(doc => doc.toObject()); // Convert each document to a plain object
+    res.render('products', {
+        products: plainObjects,
+        hasPrevPage,
+        hasNextPage,
+        nextPage,
+        prevPage
+    });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ status: 'error', message: error.message });
+    }
+});
+router.get('/carts-view/:cid', privateAccess, async (req, res) => {
+    try {
+        const cart = await cartsManager.getById(req.params.cid);
+        const cartWithToString = cart.map(item => ({
+            ...item,
+            _id: item._id.toString(),
+            products: item.products.map(product => ({ ...product, _id: product._id.toString() }))
+        }));
+        res.render('carts', { cart: cartWithToString });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
         console.log(error);
     }
 });
-router.get('carts-view/:cid', async (req, res) => {
-    try {
-        const cart = await cartsManager.getById(Number(req.params.cid));
-        res.render('carts', { cart }); 
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
-    };
-});
+export default router;

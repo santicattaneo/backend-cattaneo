@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import Products from '../dao/dbManagers/products.manager.js';
-import { __dirname } from '../utils.js';
+import { __dirname, uploader } from '../utils.js';
 
 const router = Router();
 const productsManager = new Products();
 
-//get
 router.get('/', async (req, res) => {
     try {
         const products = await productsManager.get();
@@ -25,8 +24,7 @@ router.get('/:pid', async (req, res) => {
     };
 });
 
-//post
-router.post('/', upluader.array('thumbnail'), async (req, res) => {
+router.post('/', uploader.array('thumbnail'), async (req, res) => {
     try {
         req.body.thumbnail = [];
         req.files.forEach((file) => {
@@ -41,7 +39,6 @@ router.post('/', upluader.array('thumbnail'), async (req, res) => {
     };
 });
 
-//put
 router.put('/pid', async (req, res) => {
     try {
         await productsManager.update(Number(req.params.pid), req.body);
@@ -52,7 +49,6 @@ router.put('/pid', async (req, res) => {
     }
 });
 
-//delete
 router.delete('/:pid', async (req, res) => {
     try {
         await productsManager.delete(Number(req.params.pid));
