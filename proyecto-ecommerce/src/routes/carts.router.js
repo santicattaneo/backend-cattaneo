@@ -26,7 +26,7 @@ router.post('/', async (req, res) => {
 
 router.post('/:cid/product/:pid', async (req, res) => {
     try {
-        await cartsManager.updateProduct(Number(req.params.cid), Number(req.params.pid), Number(req.params.quantity));
+        await cartsManager.updateProduct(req.params.cid, req.params.pid, Number(req.params.quantity));
         res.send({ status: 'success', message: 'Product quantity modified' });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });

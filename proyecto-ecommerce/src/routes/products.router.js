@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 router.get('/:pid', async (req, res) => {
     try {
-        const product = await productsManager.getById(Number(req.params.pid));
+        const product = await productsManager.getById(req.params.pid);
         res.send({ status: 'success', payload: product });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
@@ -39,19 +39,26 @@ router.post('/', uploader.array('thumbnail'), async (req, res) => {
     };
 });
 
-router.put('/pid', async (req, res) => {
+router.put('/:pid', uploader.array('thumbnail'), async (req, res) => {
     try {
-        await productsManager.update(Number(req.params.pid), req.body);
+        req.body.thumbnail = [];
+        if(req.body.thumbnail){
+            req.files.forEach((file) => {
+                const filename = file.filename;
+                req.body.thumbnail.push(`http://localhost:8080/img/${filename}`);
+            });
+        };
+        await productsManager.update(req.params.pid, req.body);
         res.send({ status: 'success', message: 'Product updated' });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });
         console.log(error);
-    }
+    };
 });
 
 router.delete('/:pid', async (req, res) => {
     try {
-        await productsManager.delete(Number(req.params.pid));
+        await productsManager.delete(req.params.pid);
         res.send({ status: 'success', message: 'Product deleted' });
     } catch (error) {
         res.status(500).send({ status: 'error', message: error.message });

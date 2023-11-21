@@ -10,7 +10,8 @@ const productsSchema = new mongoose.Schema({
     price: { type: Number, require: true },
     status: { type: Boolean, default: true },
     stock: { type: Number, require: true },
-    category: { type: String, require: true }
+    category: { type: String, require: true },
+    thumbnail: {type: Array, default: [] }
 });
 
 productsSchema.plugin(mongoosePaginate);

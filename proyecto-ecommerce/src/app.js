@@ -8,6 +8,8 @@ import session from 'express-session';
 import handlebars from 'express-handlebars';
 import mongoose from 'mongoose';
 import { __dirname } from './utils.js';
+import initializePassport from './config/passport.config.js';
+import passport from 'passport';
 
 const app = express();
 
@@ -36,6 +38,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', viewsRouter);
 app.use('/api/products', productsRouter);

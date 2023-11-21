@@ -2,6 +2,7 @@ import { Router } from 'express';
 import Carts from '../dao/dbManagers/carts.manager.js'
 import Products from '../dao/dbManagers/products.manager.js';
 import productsModel from '../dao/dbManagers/models/products.model.js';
+import usersModel from '../dao/dbManagers/models/users.model.js';
 
 const router = Router();
 
@@ -37,11 +38,12 @@ router.get('/products-view', privateAccess, async (req, res) => {
     try {
         const { page = 1, limit = 5, sort, query } = req.query;
         const { docs, hasPrevPage, hasNextPage, nextPage, prevPage } = await productsModel.paginate({}, { limit, page, sort, query });
-    const plainObjects = docs.map(doc => doc.toObject()); // Convert each document to a plain object
+        const plainObjects = docs.map(doc => doc.toObject());
     res.render('products', {
         products: plainObjects,
         hasPrevPage,
         hasNextPage,
+        currentPage: parseInt(page),
         nextPage,
         prevPage
     });
