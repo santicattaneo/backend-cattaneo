@@ -90,3 +90,9 @@ button{
     background-color: white;
     border-radius: .5rem;
 }
+.btnStyle img {
+    width: 2rem;
+}
+.btnSocial{
+    width: 100% !important;
+}
