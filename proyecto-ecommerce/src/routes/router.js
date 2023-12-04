@@ -1,6 +1,8 @@
 import { Router as expressRouter } from 'express';
-import passport from 'passport';
+import jwt from 'jsonwebtoken';
 import { accessRolesEnum, passportStrategiesEnum } from '../config/enums.config.js';
+import { Strategy } from 'passport-jwt';
+import passport from 'passport';
 
 export default class Router {
     constructor() {
@@ -34,12 +36,29 @@ export default class Router {
         );
     };
 
+    put(path, policies, strategy, ...callbacks) {
+        this.router.post(
+            path,
+            this.applyCustomPassportCall(strategy),
+            this.handlePolicies(policies),
+            this.generateCustomResponse,
+            this.applyCallbacks(callbacks)
+        );
+    };
+
+    delete(path, policies, strategy, ...callbacks) {
+        this.router.post(
+            path,
+            this.applyCustomPassportCall(strategy),
+            this.handlePolicies(policies),
+            this.generateCustomResponse,
+            this.applyCallbacks(callbacks)
+        );
+    };
+
     generateCustomResponse = (req, res, next) => {
         res.sendSuccess = (data) => {
             res.status(200).json({ data });
-        };
-        res.sendSuccessNewResourse = (data) => {
-            res.status(201).json({ data });
         };
         res.sendServerError = (error) => {
             res.status(500).json({ error });
@@ -52,9 +71,9 @@ export default class Router {
 
     applyCustomPassportCall = (strategy) => (req, res, next) => {
         if(strategy === passportStrategiesEnum.JWT) {
-            passport.authenticate(strategy, function(err, user, info) {
+            passport.authenticate(strategy, function (err, user, info) {
                 if(err) return next(err);
-                if(!user) return res.status(401).send({ error: info.messages ? info.messages: info.toString() });
+                if(!user) return res.status(401).send({ error: info.messages ? info.messages : info.toString() });
                 req.user = user;
                 next();
             })(req, res, next);
@@ -65,7 +84,7 @@ export default class Router {
 
     handlePolicies = (policies) => (req, res, next) => {
         if(policies[0] === accessRolesEnum.PUBLIC) return next();
-        const user = req.user
+        const user = req.user;
         if(!policies.includes(user.role.toUpperCase())) return res.status(403).json({ error: 'not permissions' });
         next();
     };

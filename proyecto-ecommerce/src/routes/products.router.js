@@ -1,69 +1,76 @@
-import { Router } from 'express';
+import Router from './router.js';
 import Products from '../dao/dbManagers/products.manager.js';
 import { __dirname, uploader } from '../utils.js';
+import { accessRolesEnum, passportStrategiesEnum } from '../config/enums.config.js';
 
-const router = Router();
-const productsManager = new Products();
-
-router.get('/', async (req, res) => {
-    try {
-        const products = await productsManager.get();
-        res.send({ status: 'success', payload: products });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
+export default class ProductsRouter extends Router {
+    constructor() {
+        super(),
+        this.productsManager = new Products();
     };
-});
-router.get('/:pid', async (req, res) => {
-    try {
-        const product = await productsManager.getById(req.params.pid);
-        res.send({ status: 'success', payload: product });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
-    };
-});
 
-router.post('/', uploader.array('thumbnail'), async (req, res) => {
-    try {
-        req.body.thumbnail = [];
-        req.files.forEach((file) => {
-            const filename = file.filename;
-            req.body.thumbnail.push(`http://localhost:8080/img/${filename}`);
-        });
-        await productsManager.post(req.body);
-        res.send({ status: 'success', message: 'Product created' });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
+    init() {
+        this.get('/', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.getProducts);
+        this.get('/:pid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.getProductById);
+        this.post('/', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.postProduct);
+        this.put('/:pid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.updateProductById);
+        this.delete('/:pid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.deleteProductById);
     };
-});
 
-router.put('/:pid', uploader.array('thumbnail'), async (req, res) => {
-    try {
-        req.body.thumbnail = [];
-        if(req.body.thumbnail){
+    async getProducts (req, res) {
+        try {
+            const products = await this.productsManager.get();
+            res.sendSuccess(products);
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+
+    async getProductById (req, res) {
+        try {
+            const product = await this.productsManager.getById(req.params.pid);
+            res.sendSuccess(product);
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+
+    async postProduct (req, res) {
+        try {
+            req.body.thumbnail = [];
             req.files.forEach((file) => {
                 const filename = file.filename;
                 req.body.thumbnail.push(`http://localhost:8080/img/${filename}`);
             });
+            await this.productsManager.post(req.body);
+            res.sendSuccess('Product created');
+        } catch (error) {
+            res.sendServerError(error.message);
         };
-        await productsManager.update(req.params.pid, req.body);
-        res.send({ status: 'success', message: 'Product updated' });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
     };
-});
 
-router.delete('/:pid', async (req, res) => {
-    try {
-        await productsManager.delete(req.params.pid);
-        res.send({ status: 'success', message: 'Product deleted' });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
+    async updateProductById (req, res) {
+        try {
+            req.body.thumbnail = [];
+            if(req.body.thumbnail){
+                req.files.forEach((file) => {
+                    const filename = file.filename;
+                    req.body.thumbnail.push(`http://localhost:8080/img/${filename}`);
+                });
+            };
+            await this.productsManager.update(req.params.pid, req.body);
+            res.sendSuccess('Product updated');
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
     };
-});
 
-export default router;
+    async deleteProductById (req, res) {
+        try {
+            await this.productsManager.delete(req.params.pid);
+            res.sendSuccess('Product deleted');
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+};

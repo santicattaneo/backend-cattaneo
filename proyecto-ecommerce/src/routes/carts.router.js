@@ -1,37 +1,43 @@
-import { Router } from 'express';
+import Router from './router.js';
 import Carts from '../dao/dbManagers/carts.manager.js';
+import { accessRolesEnum, passportStrategiesEnum } from '../config/enums.config.js';
 
-const router = Router();
-const cartsManager = new Carts();
-
-router.get('/:cid', async (req, res) => {
-    try {
-        const cart = await cartsManager.getById(req.params.cid);
-        res.send({ status: 'success', payload: cart });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send({ status: 'error', message: error.message });
-    }
-});
-
-router.post('/', async (req, res) => {
-    try {
-        await cartsManager.post(req.body);
-        res.send({ status: 'success', message: 'Cart created' });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
+export default class CartsRouter extends Router {
+    constructor() {
+        super();
+        this.cartsManager = new Carts();
     };
-});
 
-router.post('/:cid/product/:pid', async (req, res) => {
-    try {
-        await cartsManager.updateProduct(req.params.cid, req.params.pid, Number(req.params.quantity));
-        res.send({ status: 'success', message: 'Product quantity modified' });
-    } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-        console.log(error);
+    init() {
+        this.get('/:cid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.getCartById)
+        this.post('/', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.postCart)
+        this.post('/:cid/product/:pid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, this.postProductOnCart)
     };
-});
 
-export default router;
+    async getCartById (req, res)  {
+        try {
+            const cart = await this.cartsManager.getById(req.params.cid);
+            res.sendSuccess(cart);
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+
+    async postCart (req, res) {
+        try {
+            await this.cartsManager.post(req.body);
+            res.sendSuccess('Cart created');
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+
+    async postProductOnCart (req, res) {
+        try {
+            await this.cartsManager.updateProduct(req.params.cid, req.params.pid, Number(req.params.quantity));
+            res.sendSuccess('Product quantity modified');
+        } catch (error) {
+            res.sendServerError(error.message);
+        };
+    };
+};

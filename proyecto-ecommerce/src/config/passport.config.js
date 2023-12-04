@@ -1,13 +1,28 @@
 import passport from 'passport';
+import jwt from 'passport-jwt';
+import { passportStrategiesEnum } from './enums.config.js';
+import { PRIVATE_KEY_JWT } from './constants.config.js';
+import passport from 'passport';
 import local from 'passport-local';
 import usersModel from '../dao/dbManagers/models/users.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 
+const JWTStrategy = jwt.Strategy;
+const ExtractJWT = jwt.ExtractJwt;
 const LocalStrategy = local.Strategy;
 
 const initializePassport = () => {
-    //local
+    passport.use(passportStrategiesEnum.JWT, new JWTStrategy({
+        jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+        secretOrKey: PRIVATE_KEY_JWT
+    }, async (jwt_payload, done) => {
+        try {
+            return done(null, jwt_payload.user);
+        } catch (error) {
+            return done(error);
+        };
+    }));
     passport.use('register', new LocalStrategy({
         passReqToCallback: true,
         usernameField: 'email'
