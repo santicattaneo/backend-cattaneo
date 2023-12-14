@@ -10,11 +10,12 @@ import mongoose from 'mongoose';
 import { __dirname } from './utils.js';
 import initializePassport from './config/passport.config.js';
 import passport from 'passport';
+import configs from './config/config.js';
 
 const app = express();
 
 try {
-    await mongoose.connect('mongodb+srv://santiagocattaneo01:XOdbjUkUPk8cmxFD@cluster55575sc.kxvftyn.mongodb.net/proyectoecommerce?retryWrites=true&w=majority');
+    await mongoose.connect(configs.mongoUrl);
     console.log('DB connected');
 } catch (error) {
     console.log(error.message);
@@ -54,4 +55,4 @@ app.use('/api/products', productsRouter.getRouter());
 app.use('/api/carts', cartsRouter.getRouter());
 app.use('/api/users', usersRouter.getRouter());
 
-app.listen(8080, () => console.log('Listening on port 8080'));
+app.listen(configs.port, () => console.log(`Listening on port ${configs.port}`));
