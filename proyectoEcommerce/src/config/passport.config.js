@@ -2,9 +2,8 @@ import passport from 'passport';
 import jwt from 'passport-jwt';
 import { passportStrategiesEnum } from './enums.config.js';
 import { PRIVATE_KEY_JWT } from './constants.config.js';
-import passport from 'passport';
 import local from 'passport-local';
-import usersModel from '../dao/dbManagers/models/users.model.js';
+import usersModel from '../dao/mongo/models/users.model.js';
 import { createHash, isValidPassword } from '../utils.js';
 import GitHubStrategy from 'passport-github2';
 
@@ -23,6 +22,7 @@ const initializePassport = () => {
             return done(error);
         };
     }));
+
     passport.use('register', new LocalStrategy({
         passReqToCallback: true,
         usernameField: 'email'
@@ -61,7 +61,6 @@ const initializePassport = () => {
         };
     }));
 
-    //github
     passport.use('github', new GitHubStrategy({
         clientID: 'Iv1.b9e29173fe2b8290',
         clientSecret: '1f320858f4a7360e9f27250cf9df13b362a8cc4d',
@@ -89,10 +88,10 @@ const initializePassport = () => {
         };
     }));
 
-    //serializar y deserializar 
     passport.serializeUser((user, done) => {
         done(null, user._id);
     });
+
     passport.deserializeUser(async(id, done) => {
         const user = await usersModel.findById(id);
         done(null, user);

@@ -15,7 +15,7 @@ import configs from './config/config.js';
 const app = express();
 
 try {
-    await mongoose.connect(configs.mongoUrl);
+    await mongoose.connect('mongodb+srv://santiagocattaneo01:XOdbjUkUPk8cmxFD@cluster55575sc.kxvftyn.mongodb.net/proyectoecommerce?retryWrites=true&w=majority');
     console.log('DB connected');
 } catch (error) {
     console.log(error.message);
@@ -55,4 +55,4 @@ app.use('/api/products', productsRouter.getRouter());
 app.use('/api/carts', cartsRouter.getRouter());
 app.use('/api/users', usersRouter.getRouter());
 
-app.listen(configs.port, () => console.log(`Listening on port ${configs.port}`));
+app.listen(8080, () => console.log(`Listening on port 8080`));
