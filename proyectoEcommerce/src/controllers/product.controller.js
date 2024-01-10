@@ -1,11 +1,19 @@
 import { getProducts as getProductsService, getProductById as getProductByIdService, postProduct as postProductService, updateProductById as updateProductByIdService, deleteProductById as deleteProductByIdService} from '../services/products.service.js';
+import { generateProducts } from '../utils.js';
+import CustomError from '../middlewares/errors/CustomError.js';
+import EErrors from '../middlewares/errors/enums.js';
 
 const getProducts = async (req, res) => {
     try {
         const products = await getProductsService();
         res.send({ status: 'success', payload: products });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -14,7 +22,12 @@ const getProductById = async (req, res) => {
         const product = await getProductByIdService(req.params.pid);
         res.send({ status: 'success', payload: product });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -28,7 +41,12 @@ const postProduct = async (req, res) => {
         const result = await postProductService(req.body);
         res.status(201).send({ status: 'success', message: 'Product created', payload: result });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -44,7 +62,12 @@ const updateProductById = async (req, res) => {
         const result = await updateProductByIdService(req.params.pid, req.body);
         res.send({ status: 'success', message: 'product updated', payload: result });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -53,7 +76,29 @@ const deleteProductById = async (req, res) => {
         const result = await deleteProductByIdService(req.params.pid);
         res.send({ status: 'success', message: 'product updated', pid: result });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
+    };
+};
+
+const getMockProducts = async (req, res) => {
+    try {
+        let users = [];
+        for(let i=0; i < 100; i++) {
+            users.push(generateProducts());
+        };
+        res.send({ status: 'success', payload: users });
+    } catch (error) {
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -62,5 +107,6 @@ export{
     getProductById,
     postProduct,
     updateProductById,
-    deleteProductById
+    deleteProductById,
+    getMockProducts
 };

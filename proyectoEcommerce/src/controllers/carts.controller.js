@@ -2,6 +2,8 @@ import { getCartById as getCartByIdService, postCart as postCartService, postPro
 import { getProductById as getProductByIdService, updateProductById as updateProductByIdService } from '../services/products.service.js';
 import Tickets from '../dao/mongo/tickets.mongo.js;'
 import uuid from 'uuid';
+import CustomError from '../middlewares/errors/CustomError.js';
+import EErrors from '../middlewares/errors/enums.js';
 
 const ticketsManager = new Tickets();
 
@@ -11,8 +13,13 @@ const getCartById = async (req, res) => {
         const cart = await getCartByIdService(cid);
         res.send({ status: 'success', payload: cart });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-    }
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
+    };
 };
 
 const postCart = async (req, res) => {
@@ -20,8 +27,13 @@ const postCart = async (req, res) => {
         const cart = await postCartService(req.body);
         res.status(201).send({ status: 'success', message: 'cart updated', payload: cart });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-    }
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
+    };
 };
 
 const postProductOnCart = async (req, res) => {
@@ -30,8 +42,13 @@ const postProductOnCart = async (req, res) => {
         res.status(201).send({ status: 'success', message: 'product quantity modified', cid: result.cid, pid: result.pid, quantity: result.quantity });
         
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
-    }
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
+    };
 };
 
 const purchase = async (req, res) => {
@@ -54,7 +71,12 @@ const purchase = async (req, res) => {
             res.send({ status: 'success', message: 'not enough stock' });
         };
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 

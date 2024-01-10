@@ -1,3 +1,6 @@
+import CustomError from '../middlewares/errors/CustomError.js';
+import EErrors from '../middlewares/errors/enums.js';
+
 const register = async (req, res) => {
     res.send({ status: 'success', message: 'user registered' });
 };
@@ -9,7 +12,12 @@ const failRegister = async (req, res) => {
 const login = async (req, res) => {
     try {
         if(!req.user){
-            return res.status(400).send({ status: 'error', message: 'Invalid credentials'})
+            throw CustomError.createError({
+                name: 'UserError',
+                cause: 'Invalid credentials',
+                message: 'Error trying to create user',
+                code: EErrors.INVALID_CREDENTIALS
+            });
         };
         req.session.user = {
             name: `${req.user.first_name} ${req.user.last_name}`,
@@ -18,7 +26,12 @@ const login = async (req, res) => {
         };
         res.send({ status: 'success', message: 'Login successful'});
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -37,7 +50,14 @@ const githubCb = async (req, res) => {
 
 const logout = async (req, res) => {
     req.session.destroy(error => {
-        if(error) return res.sendServerError(error.message);
+        if(error){
+            throw CustomError.createError({
+                name: 'ServerError',
+                cause: 'Internal server error',
+                message: 'Server error, try again later',
+                code: EErrors.INTERNAL_SERVER_ERROR
+            });
+        };
         res.redirect('/');
     });
 };

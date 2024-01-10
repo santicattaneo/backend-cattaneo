@@ -1,5 +1,6 @@
 import { productsView as productsViewService, carByIdView as carByIdViewService } from '../services/views.service.js';
-
+import CustomError from '../middlewares/errors/CustomError.js';
+import EErrors from '../middlewares/errors/enums.js';
 
 const registerView = async (req, res) => {
     res.render('register')
@@ -27,7 +28,12 @@ const productsView = async (req, res) => {
             prevPage
         });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
@@ -41,7 +47,12 @@ const cartByIdView = async (req, res) => {
         }));
         res.render('carts', { cart: cartWithToString });
     } catch (error) {
-        res.status(500).send({ status: 'error', message: error.message });
+        throw CustomError.createError({
+            name: 'ServerError',
+            cause: 'Internal server error',
+            message: 'Server error, try again later',
+            code: EErrors.INTERNAL_SERVER_ERROR
+        });
     };
 };
 
