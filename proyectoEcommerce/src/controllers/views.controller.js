@@ -28,12 +28,7 @@ const productsView = async (req, res) => {
             prevPage
         });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -47,12 +42,7 @@ const cartByIdView = async (req, res) => {
         }));
         res.render('carts', { cart: cartWithToString });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 

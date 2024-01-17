@@ -8,12 +8,7 @@ const getProducts = async (req, res) => {
         const products = await getProductsService();
         res.send({ status: 'success', payload: products });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -22,12 +17,7 @@ const getProductById = async (req, res) => {
         const product = await getProductByIdService(req.params.pid);
         res.send({ status: 'success', payload: product });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -41,12 +31,7 @@ const postProduct = async (req, res) => {
         const result = await postProductService(req.body);
         res.status(201).send({ status: 'success', message: 'Product created', payload: result });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -62,12 +47,7 @@ const updateProductById = async (req, res) => {
         const result = await updateProductByIdService(req.params.pid, req.body);
         res.send({ status: 'success', message: 'product updated', payload: result });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -76,12 +56,7 @@ const deleteProductById = async (req, res) => {
         const result = await deleteProductByIdService(req.params.pid);
         res.send({ status: 'success', message: 'product updated', pid: result });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -93,12 +68,7 @@ const getMockProducts = async (req, res) => {
         };
         res.send({ status: 'success', payload: users });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 

@@ -13,12 +13,7 @@ const getCartById = async (req, res) => {
         const cart = await getCartByIdService(cid);
         res.send({ status: 'success', payload: cart });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -27,12 +22,7 @@ const postCart = async (req, res) => {
         const cart = await postCartService(req.body);
         res.status(201).send({ status: 'success', message: 'cart updated', payload: cart });
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -42,12 +32,7 @@ const postProductOnCart = async (req, res) => {
         res.status(201).send({ status: 'success', message: 'product quantity modified', cid: result.cid, pid: result.pid, quantity: result.quantity });
         
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 
@@ -71,12 +56,7 @@ const purchase = async (req, res) => {
             res.send({ status: 'success', message: 'not enough stock' });
         };
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 

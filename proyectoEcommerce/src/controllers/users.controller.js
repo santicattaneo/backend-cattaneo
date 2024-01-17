@@ -26,12 +26,7 @@ const login = async (req, res) => {
         };
         res.send({ status: 'success', message: 'Login successful'});
     } catch (error) {
-        throw CustomError.createError({
-            name: 'ServerError',
-            cause: 'Internal server error',
-            message: 'Server error, try again later',
-            code: EErrors.INTERNAL_SERVER_ERROR
-        });
+        throw CustomError.ServerError();
     };
 };
 

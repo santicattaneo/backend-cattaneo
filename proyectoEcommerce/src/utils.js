@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import { fakerES as faker } from '@faker-js/faker';
+import winston from 'winston';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -40,6 +41,42 @@ const generateProducts = () => {
         thumbnail: faker.image.url(),
         id: faker.database.mongodbObjectId()
     };
+};
+
+const ENVIRONMENT = 'desarrollo';
+let logger;
+
+const customLevelOptions = {
+    levels: {
+        fatal: 0,
+        error: 1,
+        warning: 2,
+        info: 3,
+        http: 4,
+        debug: 5
+    }
+};
+
+if(ENVIRONMENT === 'desarrollo') {
+    logger = winston.createLogger({
+        transports: [
+            new winston.transport.Console({
+                level: 'debug'
+            })
+        ]
+    });
+} else {
+    logger = winston.createLogger({
+        transports: [
+            new winston.transport.Console({
+                level: 'info'
+            }),
+            new winston.transport.File({
+                filename: 'logs/errors.log',
+                level: 'error'
+            })
+        ]
+    });
 };
 
 export {
