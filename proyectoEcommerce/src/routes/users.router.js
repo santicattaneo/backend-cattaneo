@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, failRegister, login, failLogin, github, githubCb, logout, current } from '../controllers/users.controller.js';
+import { register, failRegister, login, failLogin, github, githubCb, logout, current, resetPassword, userToAdmin } from '../controllers/users.controller.js';
 
 const router = Router();
 
@@ -11,5 +11,7 @@ router.get('/github', [accessRolesEnum.PUBLIC], passport.authenticate('github', 
 router.get('/githubcb', [accessRolesEnum.PUBLIC], passport.authenticate('github', { failureRedirect: '/login' }), githubCb);
 router.get('/logout', [accessRolesEnum.USER, accessRolesEnum.ADMIN], passportStrategiesEnum.JWT, logout);
 router.get('/current', [accessRolesEnum.USER, accessRolesEnum.ADMIN], passportStrategiesEnum.JWT, current);
+router.get('/recover-password', [accessRolesEnum.USER, accessRolesEnum.ADMIN], passportStrategiesEnum.JWT, resetPassword)
+router.get('/premium/:uid', [accessRolesEnum.USER], passportStrategiesEnum.JWT, userToAdmin)
 
 export default router;

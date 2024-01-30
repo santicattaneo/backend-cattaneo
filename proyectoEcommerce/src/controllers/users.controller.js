@@ -1,6 +1,6 @@
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
-
+import { resetPassword as resetPasswordService, userToAdmin as userToAdminService} from '../services/users.service.js';
 const register = async (req, res) => {
     res.send({ status: 'success', message: 'user registered' });
 };
@@ -62,6 +62,20 @@ const current = async (req, res) => {
     res.send({ status: 'success', current: currentUser });
 };
 
+const resetPassword = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        await resetPasswordService(email, password);
+        res.send({ status: 'success', message: 'email to reset your password sent'})
+    } catch (error) {
+        throw CustomError.ServerError();
+    }
+}
+
+const userToAdmin = async (req, res) => {
+    await userToAdminService(req.params.cid);
+    res.send({ status: 'success', message: 'user role changed to admin'})
+}
 export {
     register,
     failRegister,
@@ -70,5 +84,6 @@ export {
     github,
     githubCb,
     logout,
-    current
+    current,
+    resetPassword,
 };
