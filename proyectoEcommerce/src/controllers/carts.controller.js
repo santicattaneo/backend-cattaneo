@@ -3,7 +3,6 @@ import { getProductById as getProductByIdService, updateProductById as updatePro
 import Tickets from '../dao/mongo/tickets.mongo.js;'
 import uuid from 'uuid';
 import CustomError from '../middlewares/errors/CustomError.js';
-import EErrors from '../middlewares/errors/enums.js';
 
 const ticketsManager = new Tickets();
 
@@ -30,7 +29,6 @@ const postProductOnCart = async (req, res) => {
     try {
         const result = await postProductOnCartService(req.params.cid, req.params.pid, Number(req.params.quantity));
         res.status(201).send({ status: 'success', message: 'product quantity modified', cid: result.cid, pid: result.pid, quantity: result.quantity });
-        
     } catch (error) {
         throw CustomError.ServerError();
     };
@@ -53,7 +51,7 @@ const purchase = async (req, res) => {
             await ticketsManager.save(ticket);
             res.send({ status: 'success', message: 'ticket created', ticket: ticket });
         } else {
-            res.send({ status: 'success', message: 'not enough stock' });
+            res.status(422).send({ status: 'error', message: 'not enough stock' });
         };
     } catch (error) {
         throw CustomError.ServerError();

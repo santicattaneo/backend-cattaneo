@@ -76,6 +76,7 @@ const userToAdmin = async (req, res) => {
     await userToAdminService(req.params.cid);
     res.send({ status: 'success', message: 'user role changed to admin'})
 }
+
 export {
     register,
     failRegister,
@@ -86,4 +87,5 @@ export {
     logout,
     current,
     resetPassword,
+    userToAdmin
 };

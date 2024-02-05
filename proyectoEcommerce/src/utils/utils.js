@@ -4,9 +4,11 @@ import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import { fakerES as faker } from '@faker-js/faker';
 import winston from 'winston';
+import path from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
+const __mainDirname = path.join(__dirname, '..', '..');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -82,6 +84,7 @@ if(ENVIRONMENT === 'desarrollo') {
 export {
     __dirname,
     uploader,
+    __mainDirname,
     createHash,
     isValidPassword,
     generateProducts
