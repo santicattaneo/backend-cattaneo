@@ -1,6 +1,5 @@
 import multer from 'multer';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 import bcrypt from 'bcrypt';
 import { fakerES as faker } from '@faker-js/faker';
 import winston from 'winston';
@@ -62,7 +61,7 @@ const customLevelOptions = {
 if(ENVIRONMENT === 'desarrollo') {
     logger = winston.createLogger({
         transports: [
-            new winston.transport.Console({
+            new winston.transports.Console({
                 level: 'debug'
             })
         ]
@@ -70,10 +69,10 @@ if(ENVIRONMENT === 'desarrollo') {
 } else {
     logger = winston.createLogger({
         transports: [
-            new winston.transport.Console({
+            new winston.transports.Console({
                 level: 'info'
             }),
-            new winston.transport.File({
+            new winston.transports.File({
                 filename: 'logs/errors.log',
                 level: 'error'
             })

@@ -1,7 +1,6 @@
 import { getProducts as getProductsService, getProductById as getProductByIdService, postProduct as postProductService, updateProductById as updateProductByIdService, deleteProductById as deleteProductByIdService} from '../services/products.service.js';
-import { generateProducts } from '../utils.js';
+import { generateProducts } from '../utils/utils.js';
 import CustomError from '../middlewares/errors/CustomError.js';
-import EErrors from '../middlewares/errors/enums.js';
 
 const getProducts = async (req, res) => {
     try {
@@ -29,7 +28,7 @@ const postProduct = async (req, res) => {
             req.body.thumbnail.push(`http://localhost:8080/img/${filename}`);
         });
         const result = await postProductService(req.body);
-        res.status(201).send({ status: 'success', message: 'Product created', payload: result });
+        res.status(201).send({ status: 'success', message: 'product created', payload: result });
     } catch (error) {
         throw CustomError.ServerError();
     };
@@ -54,7 +53,7 @@ const updateProductById = async (req, res) => {
 const deleteProductById = async (req, res) => {
     try {
         const result = await deleteProductByIdService(req.params.pid);
-        res.send({ status: 'success', message: 'product updated', pid: result });
+        res.send({ status: 'success', message: 'product deleted', pid: result });
     } catch (error) {
         throw CustomError.ServerError();
     };

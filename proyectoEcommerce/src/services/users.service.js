@@ -48,5 +48,6 @@ const userToAdmin = async (cid) => {
 export {
     getUserByEmail,
     saveUser,
-    resetPassword
+    resetPassword,
+    userToAdmin
 };

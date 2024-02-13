@@ -1,6 +1,7 @@
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
 import { resetPassword as resetPasswordService, userToAdmin as userToAdminService} from '../services/users.service.js';
+
 const register = async (req, res) => {
     res.send({ status: 'success', message: 'user registered' });
 };

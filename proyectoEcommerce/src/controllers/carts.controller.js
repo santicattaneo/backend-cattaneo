@@ -1,7 +1,7 @@
 import { getCartById as getCartByIdService, postCart as postCartService, postProductOnCart as postProductOnCartService} from '../services/cart.service.js'
 import { getProductById as getProductByIdService, updateProductById as updateProductByIdService } from '../services/products.service.js';
-import Tickets from '../dao/mongo/tickets.mongo.js;'
-import uuid from 'uuid';
+import Tickets from '../dao/mongo/tickets.mongo.js';
+import { v4 as uuid} from 'uuid';
 import CustomError from '../middlewares/errors/CustomError.js';
 
 const ticketsManager = new Tickets();
@@ -12,7 +12,7 @@ const getCartById = async (req, res) => {
         const cart = await getCartByIdService(cid);
         res.send({ status: 'success', payload: cart });
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', message: 'Internal server error', error: error.message });
     };
 };
 
@@ -21,7 +21,7 @@ const postCart = async (req, res) => {
         const cart = await postCartService(req.body);
         res.status(201).send({ status: 'success', message: 'cart updated', payload: cart });
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', message: 'Internal server error', error: error.message });
     };
 };
 
@@ -30,7 +30,7 @@ const postProductOnCart = async (req, res) => {
         const result = await postProductOnCartService(req.params.cid, req.params.pid, Number(req.params.quantity));
         res.status(201).send({ status: 'success', message: 'product quantity modified', cid: result.cid, pid: result.pid, quantity: result.quantity });
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', message: 'Internal server error', error: error.message });
     };
 };
 
@@ -54,7 +54,7 @@ const purchase = async (req, res) => {
             res.status(422).send({ status: 'error', message: 'not enough stock' });
         };
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', message: 'Internal server error', error: error.message });
     };
 };
 

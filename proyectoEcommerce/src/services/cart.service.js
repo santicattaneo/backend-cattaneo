@@ -1,6 +1,6 @@
 import Carts from '../dao/mongo/carts.mongo.js';
 
-const cartsManager = Carts();
+const cartsManager = new Carts();
 
 const getCartById = async (cid) => {
     const cart = cartsManager.getById(cid);

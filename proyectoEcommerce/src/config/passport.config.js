@@ -1,10 +1,11 @@
 import passport from 'passport';
+import session from 'express-session';
 import jwt from 'passport-jwt';
 import { passportStrategiesEnum } from './enums.config.js';
-import { PRIVATE_KEY_JWT } from './constants.config.js';
+import configs from '../config/config.js'
 import local from 'passport-local';
 import usersModel from '../dao/mongo/models/users.model.js';
-import { createHash, isValidPassword } from '../utils.js';
+import { createHash, isValidPassword } from '../utils/utils.js';
 import GitHubStrategy from 'passport-github2';
 
 const JWTStrategy = jwt.Strategy;
@@ -14,7 +15,7 @@ const LocalStrategy = local.Strategy;
 const initializePassport = () => {
     passport.use(passportStrategiesEnum.JWT, new JWTStrategy({
         jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-        secretOrKey: PRIVATE_KEY_JWT
+        secretOrKey: configs.privateKeyJwt
     }, async (jwt_payload, done) => {
         try {
             return done(null, jwt_payload.user);
