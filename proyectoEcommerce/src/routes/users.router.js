@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { register, failRegister, login, failLogin, github, githubCb, logout, current, resetPassword, userToAdmin } from '../controllers/users.controller.js';
+import { register, failRegister, login, failLogin, github, githubCb, logout, current, resetPassword, userToAdmin, documents } from '../controllers/users.controller.js';
 import { checkUserRole } from '../middlewares/autentication/checkUserRole.js';
 import passport from 'passport';
 import { accessRolesEnum, passportStrategiesEnum} from '../config/enums.config.js';
@@ -14,7 +14,7 @@ router.get('/github', checkUserRole(accessRolesEnum.PUBLIC), passport.authentica
 router.get('/githubcb', checkUserRole(accessRolesEnum.PUBLIC), passport.authenticate('github', { failureRedirect: '/login' }), githubCb);
 router.get('/logout', checkUserRole(accessRolesEnum.USER, accessRolesEnum.ADMIN), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), logout);
 router.get('/current', checkUserRole(accessRolesEnum.USER, accessRolesEnum.ADMIN), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), current);
-router.get('/recover-password', checkUserRole(accessRolesEnum.USER, accessRolesEnum.ADMIN), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), resetPassword)
-router.get('/premium/:uid', checkUserRole(accessRolesEnum.USER), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), userToAdmin)
-
+router.get('/recover-password', checkUserRole(accessRolesEnum.USER, accessRolesEnum.ADMIN), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), resetPassword);
+router.get('/premium/:uid', checkUserRole(accessRolesEnum.USER), passport.authenticate(passportStrategiesEnum.JWT, { session: false }), userToAdmin);
+router.post('/:uid/documents', checkUserRole(accessRolesEnum.USER), passport.authenticate(passportStrategiesEnum.JWT), documents);
 export default router;

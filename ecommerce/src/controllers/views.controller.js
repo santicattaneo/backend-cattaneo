@@ -1,16 +1,27 @@
 import { productsView as productsViewService, carByIdView as carByIdViewService } from '../services/views.service.js';
-import CustomError from '../middlewares/errors/CustomError.js';
 
 const registerView = async (req, res) => {
-    res.render('register')
+    try {
+        res.render('register');
+    } catch (error) {
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
+    };
 };
 
 const loginView = async (req, res) => {
-    res.render('login');
+    try {
+        res.render('login');
+    } catch (error) {
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
+    };
 };
 
 const profileView = async (req, res) => {
-    res.render('profile', { user: req.session.user });
+    try {
+        res.render('profile', { user: req.session.user });
+    } catch (error) {
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
+    };
 };
 
 const productsView = async (req, res) => {
@@ -27,7 +38,7 @@ const productsView = async (req, res) => {
             prevPage
         });
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
     };
 };
 
@@ -41,7 +52,15 @@ const cartByIdView = async (req, res) => {
         }));
         res.render('carts', { cart: cartWithToString });
     } catch (error) {
-        throw CustomError.ServerError();
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
+    };
+};
+
+const resetPasswordView = async (req, res) => {
+    try {
+        res.render('reset-password');
+    } catch (error) {
+        res.status(500).send({ status: 'error', error: error.name, description: error.message });
     };
 };
 
@@ -50,5 +69,6 @@ export {
     loginView,
     profileView,
     productsView,
-    cartByIdView
+    cartByIdView,
+    resetPasswordView
 };

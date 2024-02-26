@@ -40,14 +40,27 @@ const resetPassword = async (email, password) => {
 
 const userToAdmin = async (cid) => {
     const userById = await UsersRepository.getById(cid);
-    userById.role = 'ADMIN'
+    if(!userById.documents.identification || !userById.documents.proofOfAdress || !userById.documents.statementOfAccount) {
+        res.status(400).send({ status: 'error', description: 'lack of documentation' });
+    }
     const result = await UsersRepository.save(userById);
     return result;
 }
+
+const uploadDocumentsById = async (uid, documents) => {
+    const userById = await UsersRepository.getById(uid);
+    documents.forEach((file) => {
+        const filename = file.filename;
+        userById.documents.push(`http://localhost:8080/img/${filename}`);
+    });
+    const result = await UsersRepository.save(uid, userById);
+    return result;
+};
 
 export {
     getUserByEmail,
     saveUser,
     resetPassword,
-    userToAdmin
+    userToAdmin,
+    uploadDocumentsById
 };

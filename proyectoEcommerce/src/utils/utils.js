@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const __mainDirname = path.join(__dirname, '..', '..');
 
-const storage = multer.diskStorage({
+const storage = () => multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, `${__dirname}/public/img`);
     },
@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const uploader = multer({
+const uploader = () => multer({
     storage,
     onError: (err, next) => {
         console.log(err.message);

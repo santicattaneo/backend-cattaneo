@@ -1,6 +1,6 @@
 import CustomError from '../middlewares/errors/CustomError.js';
 import EErrors from '../middlewares/errors/enums.js';
-import { resetPassword as resetPasswordService, userToAdmin as userToAdminService} from '../services/users.service.js';
+import { resetPassword as resetPasswordService, userToAdmin as userToAdminService, uploadDocumentsById as uploadDocumentsByIdService } from '../services/users.service.js';
 
 const register = async (req, res) => {
     res.send({ status: 'success', message: 'user registered' });
@@ -70,13 +70,24 @@ const resetPassword = async (req, res) => {
         res.send({ status: 'success', message: 'email to reset your password sent'})
     } catch (error) {
         throw CustomError.ServerError();
-    }
-}
+    };
+};
 
 const userToAdmin = async (req, res) => {
     await userToAdminService(req.params.cid);
     res.send({ status: 'success', message: 'user role changed to admin'})
-}
+};
+
+const documents = async (req, res) => {
+    try {
+        const { uid } = req.params;
+        const documents = req.files;
+        await uploadDocumentsByIdService(uid, documents);
+        res.send({ status: 'success', message: 'documents uploaded' })
+    } catch (error) {
+        throw CustomError.ServerError();
+    }
+};
 
 export {
     register,
@@ -88,5 +99,6 @@ export {
     logout,
     current,
     resetPassword,
-    userToAdmin
+    userToAdmin,
+    documents
 };
